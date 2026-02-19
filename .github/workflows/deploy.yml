@@ -9,9 +9,12 @@ jobs:
       - name: Build image
         run: |
           docker build -t myapp:latest .
+      - name: Signin to azure
+        uses: azure/login@v2
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
       - name: Push to ACR
         run: |
-          az login --service-principal -u ${{ secrets.AZURE_USER }} -p ${{ secrets.AZURE_PASS }} --tenant ${{ secrets.AZURE_TENANT }}
           az acr login -n labdeployacr
           docker tag myapp:latest labdeployacr.azurecr.io/myapp:latest
           docker push labdeployacr.azurecr.io/myapp:latest
